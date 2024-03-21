@@ -5,15 +5,12 @@ const getDOMById = (id) => document.getElementById(id);
 
 const navPills = new NavPills();
 const tabPanesApi = new TabPanesApi();
-let dataType = "";
-
 const getNavPills = () => {
     const data = navPills.fetchData();
     data
         .then((result) => {
             renderUIForNavPills(result.data);
-            dataType = result.data[0].type;
-            gettabPanesByType(dataType);
+            gettabPanesByType(result.data[0].type);
         })
         .catch((error) => console.log(error));
 }
@@ -33,25 +30,29 @@ const gettabPanesByType = (type) => {
 window.gettabPanesByType = gettabPanesByType;
 
 const renderUIForNavPills = (data) => {
-    // let content = "";
-    // for(let item of data) {
-    //     content += `
-    //     <li class="nav-item">
-    //         <a class="nav-link active" href="#" onclick="gettabPanesByType('${item.type}')">${item.showName}</a>
-    //     </li>
-    //     `;
-    // }
     let contentHTML = data.reduce((content, item) => {
         return (
             content += `
             <li class="nav-item">
                 <a class="nav-link active" href="#" onclick="gettabPanesByType('${item.type}')">${item.showName}</a>
             </li>`
-            );
-    } , "");
+        );
+    }, "");
     getDOMById("nav-pills").innerHTML = contentHTML;
 }
 
 const renderUIForTabPanes = (data) => {
-    getDOMById("tab-panes").innerHTML = "";
+    let contentHTML = data.reduce((content, item) => {
+        const imgPath = `./${item.imgSrc_jpg}`;
+        return (
+            content += `<div class="card col-md-3">
+            <img src="${imgPath}" class="card-img-top" alt="'${item.name}'">
+            <div class="card-body">
+              <h5 class="card-title">${item.name}</h5>
+              <a href="#" class="btn btn-primary">Change</a>
+            </div>
+          </div>`
+        );
+    }, "");
+    getDOMById("tab-panes").innerHTML = contentHTML;
 }
